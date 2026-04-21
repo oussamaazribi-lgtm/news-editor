@@ -1,0 +1,508 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>News Pro Generator - Ultra Dynamic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;900&family=Almarai:wght@400;700;800&family=Tajawal:wght@400;700;900&family=Montserrat:wght@400;700;900&family=Bebas+Neue&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --accent: #0ea5e9; 
+            --accent-glow: rgba(14, 165, 233, 0.3);
+        }
+        
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background: #020617;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.1) 0px, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(99, 102, 241, 0.1) 0px, transparent 50%);
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+
+        /* Glassmorphism Effect */
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .setting-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .setting-card:hover {
+            border-color: rgba(14, 165, 233, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Animated Inputs */
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            height: 4px;
+            border-radius: 2px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--accent-glow);
+            transition: all 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 15px var(--accent);
+        }
+
+        .pos-btn {
+            background: rgba(51, 65, 85, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .pos-btn.active {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 0 20px var(--accent-glow);
+            border-color: transparent;
+        }
+
+        .upload-zone {
+            background: rgba(15, 23, 42, 0.4);
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+        }
+
+        .upload-zone:hover {
+            background: rgba(14, 165, 233, 0.05);
+            border-color: var(--accent);
+            border-style: solid;
+        }
+
+        .dynamic-badge {
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--accent);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .preview-glow {
+            position: relative;
+        }
+        .preview-glow::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(45deg, var(--accent), #6366f1, var(--accent));
+            border-radius: 26px;
+            z-index: -1;
+            opacity: 0.3;
+            filter: blur(10px);
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+    </style>
+</head>
+<body class="p-4 lg:p-12">
+
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-10">
+        
+        <!-- Left Column: Visual Preview -->
+        <div class="w-full lg:w-3/5 flex flex-col">
+            <div class="mb-8 flex items-center justify-between">
+                <div>
+                    <h1 class="text-4xl font-black tracking-tight text-white flex items-center gap-3">
+                        <div class="w-2 h-10 bg-sky-500 rounded-full animate-bounce"></div>
+                        ستوديو الأخبار
+                    </h1>
+                    <p class="text-slate-400 mt-2 mr-5">صمم محتواك البصري باحترافية في ثوانٍ</p>
+                </div>
+                <div class="hidden md:block">
+                    <span class="dynamic-badge">LIVE PREVIEW ON</span>
+                </div>
+            </div>
+
+            <div class="preview-glow">
+                <div class="glass-card overflow-hidden relative group">
+                    <canvas id="mainCanvas" class="w-full h-full object-contain cursor-crosshair transition-transform duration-500 group-hover:scale-[1.01]"></canvas>
+                    <div class="absolute inset-0 pointer-events-none border-[12px] border-white/5 rounded-[24px]"></div>
+                </div>
+            </div>
+            
+            <div class="mt-8 flex gap-4">
+                <button id="downloadBtn" class="flex-[3] relative overflow-hidden group bg-sky-500 hover:bg-sky-400 text-white font-black py-5 rounded-2xl transition-all shadow-[0_0_30px_-5px_rgba(14,165,233,0.5)] transform active:scale-95 flex items-center justify-center gap-3">
+                    <div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span class="text-lg">حفظ التصميم النهائي</span>
+                </button>
+                <button id="resetBtn" class="flex-1 bg-slate-800 hover:bg-red-500/20 hover:text-red-500 text-slate-400 rounded-2xl border border-slate-700 transition-all flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Right Column: Control Panel -->
+        <div class="w-full lg:w-2/5 space-y-6 lg:max-h-[90vh] lg:overflow-y-auto pr-2 custom-scroll">
+            
+            <!-- Step 1: Content -->
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="font-black text-sky-400 flex items-center gap-2">
+                        <span class="flex items-center justify-center w-6 h-6 rounded-md bg-sky-500/20 text-[12px]">01</span>
+                        المحتوى والنصوص
+                    </h3>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="relative group">
+                        <textarea id="fullText" rows="3" class="w-full bg-slate-900/50 p-4 rounded-2xl border border-slate-700 text-white focus:border-sky-500 outline-none transition-all resize-none" placeholder="اكتب الخبر هنا..."></textarea>
+                        <div class="absolute bottom-3 left-3 text-[10px] text-slate-500">AUTO-DETECTION RTL/LTR</div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="col-span-2 md:col-span-1">
+                            <label class="text-[10px] text-slate-500 font-bold mb-2 block mr-1 uppercase tracking-tighter">نوع الخط</label>
+                            <select id="fontFamily" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl p-3 text-sm focus:ring-2 ring-sky-500/20">
+                                <optgroup label="عربي">
+                                    <option value="'Cairo', sans-serif">Cairo (عصري)</option>
+                                    <option value="'Almarai', sans-serif">Almarai (نظيف)</option>
+                                    <option value="'Tajawal', sans-serif">Tajawal (ناعم)</option>
+                                </optgroup>
+                                <optgroup label="ENGLISH">
+                                    <option value="'Montserrat', sans-serif">Montserrat (Bold)</option>
+                                    <option value="'Bebas Neue', sans-serif">Bebas Neue (News)</option>
+                                    <option value="'Oswald', sans-serif">Oswald (Compact)</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div class="col-span-2 md:col-span-1">
+                            <label class="text-[10px] text-slate-500 font-bold mb-2 block mr-1 uppercase tracking-tighter">لون الهوية</label>
+                            <div class="flex items-center gap-3 bg-slate-900/80 border border-slate-700 p-2 rounded-xl">
+                                <input type="color" id="accentColor" value="#0ea5e9" class="rounded-lg">
+                                <span id="accentHex" class="text-xs font-mono text-slate-300">#0EA5E9</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <input type="text" id="sourceText" class="w-full bg-slate-900/50 p-4 rounded-2xl border border-slate-700 text-white outline-none focus:border-sky-500" placeholder="مصدر الخبر (مثلاً: وكالة الأنباء)">
+                </div>
+            </div>
+
+            <!-- Step 2: Visual Layer -->
+            <div class="glass-card p-6">
+                <h3 class="font-black text-sky-400 flex items-center gap-2 mb-6">
+                    <span class="flex items-center justify-center w-6 h-6 rounded-md bg-sky-500/20 text-[12px]">02</span>
+                    الوسائط والعلامة التجارية
+                </h3>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <label class="cursor-pointer group">
+                        <div class="upload-zone p-5 rounded-2xl text-center">
+                            <div class="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-sky-500 group-hover:text-white transition-all">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            </div>
+                            <span class="block text-[11px] font-bold text-slate-300">الخلفية</span>
+                        </div>
+                        <input type="file" id="bgInput" class="hidden" accept="image/*">
+                    </label>
+                    <label class="cursor-pointer group">
+                        <div class="upload-zone p-5 rounded-2xl text-center">
+                            <div class="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-emerald-500 group-hover:text-white transition-all">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                            </div>
+                            <span class="block text-[11px] font-bold text-slate-300">الشعار</span>
+                        </div>
+                        <input type="file" id="logoInput" class="hidden" accept="image/*">
+                    </label>
+                </div>
+
+                <div class="space-y-5">
+                    <div>
+                        <div class="flex justify-between mb-3">
+                            <label class="text-xs font-bold text-slate-400">موضع الشعار</label>
+                            <span id="logoPosLabel" class="text-[10px] text-sky-500 font-mono">TL</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-2">
+                            <button class="pos-btn p-3 rounded-lg text-[10px] font-bold" data-pos="TL">TL</button>
+                            <button class="pos-btn p-3 rounded-lg text-[10px] font-bold" data-pos="TR">TR</button>
+                            <button class="pos-btn p-3 rounded-lg text-[10px] font-bold" data-pos="BL">BL</button>
+                            <button class="pos-btn p-3 rounded-lg text-[10px] font-bold" data-pos="BR">BR</button>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 mb-2 block">حجم الشعار</label>
+                            <input type="range" id="logoSize" min="50" max="400" value="180">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 mb-2 block">الشفافية</label>
+                            <input type="range" id="logoOpacity" min="10" max="100" value="100">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Fine Tuning -->
+            <div class="glass-card p-6">
+                <h3 class="font-black text-sky-400 flex items-center gap-2 mb-6">
+                    <span class="flex items-center justify-center w-6 h-6 rounded-md bg-sky-500/20 text-[12px]">03</span>
+                    التحكم الدقيق
+                </h3>
+                <div class="grid grid-cols-2 gap-x-8 gap-y-6">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">حجم الخط</label>
+                        <input type="range" id="fontSize" min="30" max="150" value="65">
+                        <div class="text-[10px] text-right font-mono text-sky-500" id="fsVal">65px</div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">موقع النص</label>
+                        <input type="range" id="textY" min="200" max="1000" value="880">
+                        <div class="text-[10px] text-right font-mono text-sky-500" id="tyVal">880px</div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">تباعد الأسطر</label>
+                        <input type="range" id="lineHeight" min="40" max="200" value="130">
+                        <div class="text-[10px] text-right font-mono text-sky-500" id="lhVal">130px</div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">تعتيم الظل</label>
+                        <input type="range" id="gradOpacity" min="0" max="100" value="90">
+                        <div class="text-[10px] text-right font-mono text-sky-500" id="goVal">90%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('mainCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 1080; canvas.height = 1080;
+
+        let state = {
+            fullText: "عاجل: إطلاق النسخة الأكثر حيوية من محرر الصور الإخباري بدعم كامل للخطوط العالمية",
+            sourceText: "مصدر الخبر | الحقيقة أولاً",
+            fontSize: 65,
+            textY: 880,
+            lineHeight: 130,
+            fontFamily: "'Cairo', sans-serif",
+            accentColor: "#0ea5e9",
+            gradOpacity: 90,
+            logoSize: 180,
+            logoPos: "TL",
+            logoOpacity: 100,
+            bgImg: null,
+            logoImg: null
+        };
+
+        function isRTL(text) {
+            const rtlChars = /[\u0591-\u07FF\uFB1D-\uFDFM\uFE70-\uFEFC]/;
+            return rtlChars.test(text);
+        }
+
+        function updateLabels() {
+            document.getElementById('fsVal').innerText = state.fontSize + 'px';
+            document.getElementById('tyVal').innerText = state.textY + 'px';
+            document.getElementById('lhVal').innerText = state.lineHeight + 'px';
+            document.getElementById('goVal').innerText = state.gradOpacity + '%';
+            document.getElementById('accentHex').innerText = state.accentColor.toUpperCase();
+            document.getElementById('logoPosLabel').innerText = state.logoPos;
+            
+            document.querySelectorAll('.pos-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.pos === state.logoPos);
+            });
+        }
+
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Background
+            ctx.fillStyle = '#020617';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (state.bgImg) {
+                const s = Math.max(canvas.width / state.bgImg.width, canvas.height / state.bgImg.height);
+                const w = state.bgImg.width * s;
+                const h = state.bgImg.height * s;
+                ctx.drawImage(state.bgImg, (canvas.width-w)/2, (canvas.height-h)/2, w, h);
+            }
+
+            // Gradient Overlay
+            const grad = ctx.createLinearGradient(0, canvas.height * 0.2, 0, canvas.height);
+            grad.addColorStop(0, 'rgba(0,0,0,0)');
+            grad.addColorStop(0.5, `rgba(0,0,0,${(state.gradOpacity/100)*0.4})`);
+            grad.addColorStop(1, `rgba(0,0,0,${state.gradOpacity/100})`);
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Logo Drawing
+            if (state.logoImg) {
+                let lx = 60, ly = 60;
+                const size = parseInt(state.logoSize);
+                const margin = 70;
+                if(state.logoPos === "TR") lx = canvas.width - size - margin; 
+                if(state.logoPos === "BL") { lx = margin; ly = canvas.height - size - margin; } 
+                if(state.logoPos === "BR") { lx = canvas.width - size - margin; ly = canvas.height - size - margin; } 
+                
+                ctx.save();
+                ctx.globalAlpha = state.logoOpacity / 100;
+                ctx.shadowColor = "rgba(0,0,0,0.5)"; 
+                ctx.shadowBlur = 40;
+                ctx.drawImage(state.logoImg, lx, ly, size, size);
+                ctx.restore();
+            }
+
+            // Text Rendering
+            const padding = 80;
+            const maxWidth = canvas.width - (padding * 2);
+            const isRightToLeft = isRTL(state.fullText);
+            
+            ctx.textAlign = isRightToLeft ? 'right' : 'left';
+            let weight = state.fontFamily.includes('Bebas') ? '400' : '900';
+            ctx.font = `${weight} ${state.fontSize}px ${state.fontFamily}`;
+            
+            const words = state.fullText.split(/\s+/).filter(w => w.length > 0);
+            let lines = []; let curLine = []; let tempT = "";
+            
+            words.forEach((w, i) => {
+                let testT = tempT + (tempT ? " " : "") + w;
+                if(ctx.measureText(testT).width > maxWidth && i > 0) {
+                    lines.push(curLine); curLine = [w]; tempT = w;
+                } else {
+                    curLine.push(w); tempT = testT;
+                }
+            });
+            lines.push(curLine);
+
+            let curY = parseInt(state.textY);
+            for (let i = lines.length - 1; i >= 0; i--) {
+                let curX = isRightToLeft ? (canvas.width - padding) : padding;
+                let wordsBefore = lines.slice(0, i).reduce((a, b) => a + b.length, 0);
+                
+                lines[i].forEach((word, j) => {
+                    // First 3 words get accent color
+                    ctx.fillStyle = (wordsBefore + j < 3) ? state.accentColor : 'white';
+                    ctx.shadowColor = "rgba(0,0,0,0.9)"; ctx.shadowBlur = 25;
+                    ctx.fillText(word, curX, curY);
+                    
+                    const wordWidth = ctx.measureText(word + " ").width;
+                    if(isRightToLeft) curX -= wordWidth;
+                    else curX += wordWidth;
+                });
+                curY -= parseInt(state.lineHeight);
+            }
+
+            // Footer / Source
+            drawFooter(padding, isRightToLeft);
+        }
+
+        function drawFooter(padding, isRightToLeft) {
+            const y = canvas.height - 100;
+            ctx.shadowBlur = 0; ctx.fillStyle = 'rgba(255,255,255,0.9)';
+            ctx.font = `bold 34px ${state.fontFamily}`;
+            
+            if(isRightToLeft) {
+                ctx.textAlign = 'right';
+                ctx.fillText(state.sourceText, canvas.width - padding - 45, y);
+                ctx.fillStyle = state.accentColor;
+                ctx.fillRect(canvas.width - padding - 22, y - 28, 12, 12); // Modern dot
+                ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+                ctx.lineWidth = 2;
+                ctx.beginPath(); ctx.moveTo(canvas.width - padding, y + 20); ctx.lineTo(canvas.width - 500, y + 20); ctx.stroke();
+            } else {
+                ctx.textAlign = 'left';
+                ctx.fillText(state.sourceText, padding + 45, y);
+                ctx.fillStyle = state.accentColor;
+                ctx.fillRect(padding + 10, y - 28, 12, 12);
+                ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+                ctx.lineWidth = 2;
+                ctx.beginPath(); ctx.moveTo(padding, y + 20); ctx.lineTo(500, y + 20); ctx.stroke();
+            }
+        }
+
+        // Event Listeners
+        const binders = ['fullText', 'sourceText', 'fontSize', 'textY', 'accentColor', 'gradOpacity', 'logoSize', 'lineHeight', 'logoOpacity', 'fontFamily'];
+        binders.forEach(id => {
+            document.getElementById(id).addEventListener('input', (e) => {
+                state[id] = e.target.value;
+                updateLabels();
+                render();
+            });
+        });
+
+        document.querySelectorAll('.pos-btn').forEach(btn => {
+            btn.onclick = () => {
+                state.logoPos = btn.dataset.pos;
+                updateLabels();
+                render();
+            };
+        });
+
+        document.getElementById('bgInput').onchange = (e) => {
+            if(!e.target.files[0]) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const img = new Image();
+                img.onload = () => { state.bgImg = img; render(); };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        };
+
+        document.getElementById('logoInput').onchange = (e) => {
+            if(!e.target.files[0]) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const img = new Image();
+                img.onload = () => { state.logoImg = img; render(); };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        };
+
+        document.getElementById('downloadBtn').onclick = () => {
+            const link = document.createElement('a');
+            link.download = `news_studio_export_${Date.now()}.png`;
+            link.href = canvas.toDataURL("image/png", 1.0);
+            link.click();
+        };
+
+        document.getElementById('resetBtn').onclick = () => {
+            if(confirm("سيتم حذف جميع الإعدادات الحالية، هل أنت متأكد؟")) location.reload();
+        };
+
+        // Initial Start
+        window.onload = () => { 
+            updateLabels(); 
+            render(); 
+        };
+    </script>
+</body>
+</html>
+
+```
