@@ -3,199 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ultimate News Studio | تحكم يدوي كامل</title>
+    <title>News Studio · تصميم احترافي تلقائي</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;900&family=Almarai:wght@400;700;800&family=Tajawal:wght@400;700;900&family=Montserrat:wght@400;700;900&family=Bebas+Neue&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #0ea5e9; --accent-glow: rgba(14, 165, 233, 0.3); }
-        body { font-family: 'Cairo', sans-serif; background: #020617; background-image: radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.1) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.1) 0px, transparent 50%), radial-gradient(at 50% 100%, rgba(99, 102, 241, 0.1) 0px, transparent 50%); color: #f8fafc; min-height: 100vh; }
-        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
-        input[type="range"] { -webkit-appearance: none; background: rgba(255, 255, 255, 0.1); height: 4px; border-radius: 2px; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: var(--accent); border-radius: 50%; cursor: pointer; box-shadow: 0 0 10px var(--accent-glow); }
-        .pos-btn { background: rgba(51, 65, 85, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.2s; }
-        .pos-btn.active { background: var(--accent); color: white; box-shadow: 0 0 20px var(--accent-glow); border-color: transparent; }
-        .upload-zone { background: rgba(15, 23, 42, 0.4); border: 2px dashed rgba(255, 255, 255, 0.1); transition: all 0.3s; }
-        .upload-zone:hover { background: rgba(14, 165, 233, 0.05); border-color: var(--accent); }
+        :root { --accent: #e11d48; --accent-glow: rgba(225, 29, 72, 0.3); }
+        body { font-family: 'Cairo', sans-serif; background: #0b0f19; color: #f1f5f9; min-height: 100vh; }
+        .glass-card { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 28px; box-shadow: 0 25px 40px -15px rgba(0,0,0,0.6); }
+        input[type="range"] { -webkit-appearance: none; background: rgba(255,255,255,0.1); height: 4px; border-radius: 4px; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: var(--accent); border-radius: 50%; cursor: pointer; box-shadow: 0 0 12px var(--accent-glow); }
+        .pos-btn { background: #1e293b; border: 1px solid #334155; transition: all 0.15s; }
+        .pos-btn.active { background: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 0 15px var(--accent-glow); }
+        .upload-zone { background: rgba(15, 23, 42, 0.5); border: 2px dashed #334155; transition: 0.2s; }
+        .upload-zone:hover { border-color: var(--accent); background: rgba(225, 29, 72, 0.05); }
         .preview-glow { position: relative; }
-        .preview-glow::after { content: ''; position: absolute; inset: -2px; background: linear-gradient(45deg, var(--accent), #6366f1, var(--accent)); border-radius: 26px; z-index: -1; opacity: 0.3; filter: blur(10px); }
-        .number-input { width: 70px; background: #1e293b; border: 1px solid #334155; color: white; padding: 4px 8px; border-radius: 8px; text-align: center; }
+        .preview-glow::after { content: ''; position: absolute; inset: -2px; background: linear-gradient(135deg, var(--accent), #a21caf, var(--accent)); border-radius: 30px; z-index: -1; opacity: 0.25; filter: blur(12px); }
+        .number-input { width: 80px; background: #0f172a; border: 1px solid #334155; color: white; padding: 6px 10px; border-radius: 14px; text-align: center; }
         .collapse-header { cursor: pointer; user-select: none; }
-        .collapse-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .collapse-content { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
         .collapse-content.open { max-height: 2000px; }
-        .tab-btn { padding: 8px 16px; border-radius: 12px; font-weight: bold; transition: all 0.2s; }
+        .tab-btn { padding: 10px 18px; border-radius: 40px; font-weight: 700; background: #1e293b; color: #94a3b8; }
         .tab-btn.active { background: var(--accent); color: white; }
-        .control-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-        .color-dot { width: 24px; height: 24px; border-radius: 6px; border: 1px solid #475569; cursor: pointer; }
+        .toolbar-icon { width: 36px; height: 36px; border-radius: 12px; background: #1e293b; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
-<body class="p-4 lg:p-8">
+<body class="p-5 lg:p-8">
 
-<div class="max-w-[1600px] mx-auto flex flex-col xl:flex-row gap-8">
+<div class="max-w-[1600px] mx-auto flex flex-col xl:flex-row gap-6">
     
-    <!-- LEFT: PREVIEW -->
+    <!-- منطقة المعاينة -->
     <div class="w-full xl:w-3/5 flex flex-col">
         <div class="mb-6 flex items-center justify-between">
             <div>
                 <h1 class="text-4xl font-black text-white flex items-center gap-3">
-                    <div class="w-2 h-10 bg-sky-500 rounded-full animate-bounce"></div>
-                    ستوديو الأخبار <span class="text-sm font-normal bg-sky-900/40 px-3 py-1 rounded-full text-sky-300">نسخة احترافية</span>
+                    <span class="w-2 h-10 bg-rose-500 rounded-full animate-pulse"></span>
+                    ستوديو الأخبار
+                    <span class="text-sm font-medium bg-rose-900/40 px-4 py-1.5 rounded-full text-rose-200">تصميم تلقائي</span>
                 </h1>
-                <p class="text-slate-400 mt-2 mr-5">تحكم يدوي كامل في كل عنصر – دقة متناهية</p>
+                <p class="text-slate-400 mt-2 mr-6">معاينة مباشرة · إعدادات محسّنة للصورة المرفقة</p>
             </div>
         </div>
 
         <div class="preview-glow">
             <div class="glass-card overflow-hidden relative">
                 <canvas id="mainCanvas" class="w-full h-full object-contain"></canvas>
-                <div class="absolute inset-0 pointer-events-none border-[12px] border-white/5 rounded-[24px]"></div>
+                <div class="absolute inset-0 pointer-events-none border-[10px] border-white/5 rounded-[28px]"></div>
             </div>
         </div>
         
         <div class="mt-6 flex gap-4">
-            <button id="downloadBtn" class="flex-[3] relative overflow-hidden group bg-sky-500 hover:bg-sky-400 text-white font-black py-5 rounded-2xl transition-all shadow-[0_0_30px_-5px_rgba(14,165,233,0.5)] transform active:scale-95 flex items-center justify-center gap-3">
+            <button id="downloadBtn" class="flex-[3] relative overflow-hidden group bg-rose-600 hover:bg-rose-500 text-white font-black py-5 rounded-2xl transition-all shadow-[0_0_30px_-5px_rgba(225,29,72,0.5)] active:scale-95 flex items-center justify-center gap-3">
                 <div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                <span class="text-lg">تصدير بصيغة PNG</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>تصدير PNG عالي الجودة</span>
             </button>
-            <button id="resetBtn" class="flex-1 bg-slate-800 hover:bg-red-500/20 hover:text-red-500 text-slate-400 rounded-2xl border border-slate-700 transition-all flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+            <button id="resetBtn" class="flex-1 bg-slate-800/80 hover:bg-red-500/20 hover:text-red-400 text-slate-300 rounded-2xl border border-slate-700 transition-all flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
             </button>
         </div>
     </div>
 
-    <!-- RIGHT: CONTROL PANEL -->
+    <!-- لوحة التحكم المبسطة -->
     <div class="w-full xl:w-2/5 space-y-4 xl:max-h-[90vh] xl:overflow-y-auto pr-2 custom-scroll">
         
-        <!-- ========== التبويبات الرئيسية ========== -->
-        <div class="flex gap-2 bg-slate-900/40 p-2 rounded-2xl">
+        <!-- تبويبات رئيسية -->
+        <div class="flex gap-2 p-1.5 bg-slate-900/50 rounded-2xl">
             <button class="tab-btn active flex-1" data-tab="tab-text">📝 النصوص</button>
             <button class="tab-btn flex-1" data-tab="tab-visual">🎨 مرئيات</button>
-            <button class="tab-btn flex-1" data-tab="tab-advanced">⚙️ متقدم</button>
+            <button class="tab-btn flex-1" data-tab="tab-advanced">⚙️ ضبط متقدم</button>
         </div>
 
-        <!-- ========== تبويب النصوص ========== -->
+        <!-- محتوى التبويبات -->
         <div id="tab-text" class="space-y-4 tab-content">
-            <!-- طبقة العنوان الرئيسي -->
+            <!-- العنوان الرئيسي (إنجليزي) -->
             <div class="glass-card p-5">
                 <div class="collapse-header flex justify-between items-center" data-target="collapse-title">
-                    <h3 class="font-black text-sky-400">🔴 العنوان الرئيسي</h3>
-                    <span class="text-slate-400 text-sm">▼</span>
+                    <h3 class="font-black text-rose-400 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-rose-500"></span> العنوان الرئيسي</h3>
+                    <span class="text-slate-400">▼</span>
                 </div>
                 <div id="collapse-title" class="collapse-content open space-y-4 pt-4">
-                    <textarea id="titleText" rows="2" class="w-full bg-slate-900/50 p-3 rounded-xl border border-slate-700 text-white" placeholder="نص العنوان الرئيسي...">عاجل: إطلاق النسخة الاحترافية</textarea>
+                    <textarea id="titleText" rows="2" class="w-full bg-slate-900/70 p-4 rounded-xl border border-slate-700 text-white text-lg" placeholder="Main headline">Ramadan Food Distribution 2021</textarea>
                     <div class="grid grid-cols-2 gap-3">
-                        <div><label class="text-xs text-slate-400">الخط</label><select id="titleFont" class="w-full bg-slate-800 p-2 rounded-lg text-sm"><option value="'Cairo', sans-serif">Cairo</option><option value="'Almarai', sans-serif">Almarai</option><option value="'Tajawal', sans-serif">Tajawal</option><option value="'Montserrat', sans-serif">Montserrat</option><option value="'Bebas Neue', sans-serif">Bebas Neue</option></select></div>
-                        <div><label class="text-xs text-slate-400">اللون</label><input type="color" id="titleColor" value="#ffffff" class="w-full h-10 rounded-lg bg-slate-800"></div>
-                        <div><label class="text-xs text-slate-400">الحجم</label><input type="range" id="titleSize" min="30" max="200" value="80" class="w-full"><span id="titleSizeVal" class="text-sky-400 text-xs">80</span></div>
-                        <div><label class="text-xs text-slate-400">الشفافية</label><input type="range" id="titleOpacity" min="0" max="100" value="100"><span id="titleOpacityVal" class="text-sky-400 text-xs">100%</span></div>
+                        <div><label class="text-xs text-slate-400">الخط</label><select id="titleFont" class="w-full bg-slate-800 p-2.5 rounded-xl"><option value="'Montserrat', sans-serif">Montserrat</option><option value="'Bebas Neue', sans-serif" selected>Bebas Neue</option><option value="'Oswald', sans-serif">Oswald</option></select></div>
+                        <div><label class="text-xs text-slate-400">اللون</label><input type="color" id="titleColor" value="#ffffff" class="w-full h-10 rounded-xl bg-slate-800"></div>
+                        <div><label class="text-xs">الحجم</label><input type="range" id="titleSize" min="40" max="200" value="110"><span id="titleSizeVal" class="text-rose-400 text-xs font-mono">110</span></div>
+                        <div><label class="text-xs">الشفافية</label><input type="range" id="titleOpacity" min="0" max="100" value="100"><span id="titleOpacityVal">100%</span></div>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
-                        <div><label class="text-xs text-slate-400">موضع X</label><input type="number" id="titleX" value="80" class="number-input w-full"></div>
-                        <div><label class="text-xs text-slate-400">موضع Y</label><input type="number" id="titleY" value="200" class="number-input w-full"></div>
+                        <div><label class="text-xs">X</label><input type="number" id="titleX" value="60" class="number-input w-full"></div>
+                        <div><label class="text-xs">Y</label><input type="number" id="titleY" value="240" class="number-input w-full"></div>
                     </div>
-                    <div><label class="text-xs text-slate-400">محاذاة</label><select id="titleAlign" class="w-full bg-slate-800 p-2 rounded-lg"><option value="right">يمين</option><option value="left">يسار</option><option value="center">وسط</option></select></div>
-                    <div class="border-t border-slate-700 pt-3">
-                        <p class="text-xs text-slate-400 mb-2">الظل</p>
-                        <div class="grid grid-cols-3 gap-2">
-                            <input type="number" id="titleShadowX" value="2" class="number-input w-full" placeholder="X">
-                            <input type="number" id="titleShadowY" value="2" class="number-input w-full" placeholder="Y">
-                            <input type="number" id="titleShadowBlur" value="10" class="number-input w-full" placeholder="Blur">
-                        </div>
-                        <input type="color" id="titleShadowColor" value="#000000" class="w-full mt-2 h-8 rounded-lg bg-slate-800">
-                    </div>
+                    <div><label class="text-xs">محاذاة</label><select id="titleAlign" class="w-full bg-slate-800 p-2.5 rounded-xl"><option value="left">يسار (LTR)</option><option value="center">وسط</option><option value="right">يمين</option></select></div>
                 </div>
             </div>
 
-            <!-- طبقة العنوان الفرعي -->
+            <!-- العنوان الفرعي (عربي) -->
             <div class="glass-card p-5">
-                <div class="collapse-header flex justify-between items-center" data-target="collapse-subtitle">
-                    <h3 class="font-black text-emerald-400">🟢 عنوان فرعي</h3>
-                    <span class="text-slate-400 text-sm">▼</span>
+                <div class="collapse-header flex justify-between items-center" data-target="collapse-sub">
+                    <h3 class="font-black text-emerald-400">🟢 العنوان الفرعي</h3>
+                    <span class="text-slate-400">▼</span>
                 </div>
-                <div id="collapse-subtitle" class="collapse-content space-y-4 pt-4">
-                    <textarea id="subText" rows="2" class="w-full bg-slate-900/50 p-3 rounded-xl border border-slate-700 text-white" placeholder="نص فرعي...">تفاصيل إضافية هامة حول الحدث</textarea>
+                <div id="collapse-sub" class="collapse-content open space-y-4 pt-4">
+                    <textarea id="subText" rows="2" class="w-full bg-slate-900/70 p-4 rounded-xl border border-slate-700 text-white">نبذة بريطانية تدفع تعويضات الأسرة أثناء الإسالمية</textarea>
                     <div class="grid grid-cols-2 gap-3">
-                        <div><label class="text-xs">الخط</label><select id="subFont" class="w-full bg-slate-800 p-2 rounded-lg"><option value="'Cairo', sans-serif">Cairo</option><option value="'Almarai', sans-serif">Almarai</option><option value="'Tajawal', sans-serif">Tajawal</option></select></div>
-                        <div><label class="text-xs">اللون</label><input type="color" id="subColor" value="#cbd5e1" class="w-full h-10 rounded-lg"></div>
-                        <div><label class="text-xs">الحجم</label><input type="range" id="subSize" min="20" max="100" value="40"><span id="subSizeVal">40</span></div>
-                        <div><label class="text-xs">الشفافية</label><input type="range" id="subOpacity" min="0" max="100" value="90"><span id="subOpacityVal">90%</span></div>
+                        <div><label>الخط</label><select id="subFont" class="w-full bg-slate-800 p-2.5 rounded-xl"><option value="'Cairo', sans-serif">Cairo</option><option value="'Almarai', sans-serif">Almarai</option><option value="'Tajawal', sans-serif" selected>Tajawal</option></select></div>
+                        <div><label>اللون</label><input type="color" id="subColor" value="#e2e8f0" class="w-full h-10"></div>
+                        <div><label>الحجم</label><input type="range" id="subSize" min="20" max="100" value="52"><span id="subSizeVal">52</span></div>
+                        <div><label>الشفافية</label><input type="range" id="subOpacity" min="0" max="100" value="90"></div>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
-                        <div><label class="text-xs">X</label><input type="number" id="subX" value="80" class="number-input w-full"></div>
-                        <div><label class="text-xs">Y</label><input type="number" id="subY" value="350" class="number-input w-full"></div>
+                        <div><label>X</label><input type="number" id="subX" value="60" class="number-input"></div>
+                        <div><label>Y</label><input type="number" id="subY" value="450" class="number-input"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- طبقة المصدر / التذييل -->
+            <!-- التذييل (عربي) -->
             <div class="glass-card p-5">
                 <div class="collapse-header flex justify-between items-center" data-target="collapse-footer">
-                    <h3 class="font-black text-amber-400">🟡 التذييل والمصدر</h3>
-                    <span class="text-slate-400 text-sm">▼</span>
+                    <h3 class="font-black text-amber-400">🟡 التذييل</h3>
+                    <span class="text-slate-400">▼</span>
                 </div>
-                <div id="collapse-footer" class="collapse-content space-y-4 pt-4">
-                    <input type="text" id="sourceText" value="مصدر الخبر | الحقيقة أولاً" class="w-full bg-slate-900/50 p-3 rounded-xl border border-slate-700">
+                <div id="collapse-footer" class="collapse-content open space-y-4 pt-4">
+                    <input type="text" id="sourceText" value="بعد انهتامات كاذبة" class="w-full bg-slate-900/70 p-4 rounded-xl border border-slate-700">
                     <div class="grid grid-cols-2 gap-3">
-                        <div><label>الخط</label><select id="sourceFont" class="w-full bg-slate-800 p-2 rounded-lg"><option value="'Cairo', sans-serif">Cairo</option><option value="'Montserrat', sans-serif">Montserrat</option></select></div>
-                        <div><label>اللون</label><input type="color" id="sourceColor" value="#0ea5e9" class="w-full h-10"></div>
-                        <div><label>الحجم</label><input type="range" id="sourceSize" min="20" max="80" value="34"><span id="sourceSizeVal">34</span></div>
+                        <div><label>الخط</label><select id="sourceFont" class="w-full bg-slate-800 p-2.5 rounded-xl"><option value="'Cairo', sans-serif">Cairo</option><option value="'Tajawal', sans-serif" selected>Tajawal</option></select></div>
+                        <div><label>اللون</label><input type="color" id="sourceColor" value="#e11d48" class="w-full h-10"></div>
+                        <div><label>الحجم</label><input type="range" id="sourceSize" min="20" max="80" value="38"><span id="sourceSizeVal">38</span></div>
                         <div><label>الشفافية</label><input type="range" id="sourceOpacity" min="0" max="100" value="100"></div>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
-                        <div><label>X</label><input type="number" id="sourceX" value="80" class="number-input"></div>
+                        <div><label>X</label><input type="number" id="sourceX" value="60" class="number-input"></div>
                         <div><label>Y</label><input type="number" id="sourceY" value="980" class="number-input"></div>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <label class="text-xs">إظهار أيقونة</label>
-                        <input type="checkbox" id="sourceIcon" checked class="w-5 h-5">
-                    </div>
+                    <label class="flex items-center gap-2"><input type="checkbox" id="sourceIcon" checked> إظهار أيقونة دائرية</label>
                 </div>
             </div>
         </div>
 
-        <!-- ========== تبويب مرئيات ========== -->
+        <!-- تبويب مرئيات (مبسط) -->
         <div id="tab-visual" class="space-y-4 tab-content hidden">
-            <!-- خلفية -->
             <div class="glass-card p-5">
-                <h3 class="font-black text-sky-400 mb-4">🌄 الخلفية</h3>
-                <label class="cursor-pointer block"><div class="upload-zone p-5 rounded-xl text-center">اختر صورة الخلفية</div><input type="file" id="bgInput" class="hidden" accept="image/*"></label>
+                <h3 class="font-black text-rose-400 mb-4">🌄 خلفية</h3>
+                <label class="cursor-pointer block"><div class="upload-zone p-5 rounded-xl text-center">اختر صورة خلفية</div><input type="file" id="bgInput" class="hidden" accept="image/*"></label>
                 <div class="grid grid-cols-2 gap-3 mt-4">
-                    <div><label>وضع الصورة</label><select id="bgMode" class="w-full bg-slate-800 p-2 rounded-lg"><option value="cover">Cover</option><option value="contain">Contain</option><option value="fill">Fill</option></select></div>
+                    <div><label>وضع الصورة</label><select id="bgMode" class="w-full bg-slate-800 p-2.5 rounded-xl"><option value="cover">Cover</option><option value="contain">Contain</option></select></div>
                     <div><label>الشفافية</label><input type="range" id="bgOpacity" min="0" max="100" value="100"></div>
                 </div>
-                <div><label class="mt-2 block">تدرج التعتيم (من الأسفل)</label><input type="range" id="gradientOpacity" min="0" max="100" value="90"><span id="gradVal">90%</span></div>
-                <div><label>لون بداية التدرج</label><input type="color" id="gradStartColor" value="#000000" class="w-full h-10"></div>
+                <div><label class="mt-2">تدرج التعتيم (أسود)</label><input type="range" id="gradientOpacity" min="0" max="100" value="95"><span id="gradVal">95%</span></div>
             </div>
-
-            <!-- شعار -->
             <div class="glass-card p-5">
-                <h3 class="font-black text-emerald-400 mb-4">🏷️ الشعار</h3>
+                <h3 class="font-black text-emerald-400 mb-4">🏷️ شعار</h3>
                 <label class="cursor-pointer block"><div class="upload-zone p-5 rounded-xl text-center">اختر شعار</div><input type="file" id="logoInput" class="hidden" accept="image/*"></label>
                 <div class="grid grid-cols-2 gap-3 mt-4">
-                    <div><label>الحجم</label><input type="range" id="logoSize" min="50" max="400" value="180"></div>
-                    <div><label>الشفافية</label><input type="range" id="logoOpacity" min="10" max="100" value="100"></div>
-                    <div><label>الدوران °</label><input type="number" id="logoRotation" value="0" min="-180" max="180" class="number-input"></div>
+                    <div><label>الحجم</label><input type="range" id="logoSize" min="50" max="300" value="140"></div>
+                    <div><label>الشفافية</label><input type="range" id="logoOpacity" min="10" max="100" value="90"></div>
                 </div>
                 <div class="grid grid-cols-4 gap-2 mt-3">
-                    <button class="pos-btn p-2 text-xs" data-pos="TL">أعلى يسار</button>
-                    <button class="pos-btn p-2 text-xs" data-pos="TR">أعلى يمين</button>
-                    <button class="pos-btn p-2 text-xs" data-pos="BL">أسفل يسار</button>
-                    <button class="pos-btn p-2 text-xs" data-pos="BR">أسفل يمين</button>
+                    <button class="pos-btn p-2 text-xs rounded-xl" data-pos="TL">أعلى يسار</button>
+                    <button class="pos-btn p-2 text-xs rounded-xl" data-pos="TR">أعلى يمين</button>
+                    <button class="pos-btn p-2 text-xs rounded-xl" data-pos="BL">أسفل يسار</button>
+                    <button class="pos-btn p-2 text-xs rounded-xl" data-pos="BR">أسفل يمين</button>
                 </div>
-                <div class="mt-2"><label>إزاحة مخصصة X/Y</label><div class="flex gap-2"><input type="number" id="logoOffsetX" value="70" class="number-input flex-1" placeholder="X"><input type="number" id="logoOffsetY" value="70" class="number-input flex-1" placeholder="Y"></div></div>
+                <div class="flex gap-2 mt-3"><input type="number" id="logoOffsetX" value="50" class="number-input flex-1" placeholder="X"><input type="number" id="logoOffsetY" value="50" class="number-input flex-1" placeholder="Y"></div>
             </div>
         </div>
 
-        <!-- ========== تبويب متقدم ========== -->
+        <!-- تبويب متقدم (إعدادات إضافية) -->
         <div id="tab-advanced" class="space-y-4 tab-content hidden">
             <div class="glass-card p-5">
-                <h3 class="font-black text-purple-400 mb-4">✨ إعدادات متقدمة</h3>
+                <h3 class="font-black text-purple-400 mb-4">✨ تحكم دقيق</h3>
                 <div class="space-y-3">
-                    <div><label>اللون التمييزي (للكلمات الأولى)</label><input type="color" id="accentColor" value="#0ea5e9" class="w-full h-10"></div>
-                    <div><label>عدد الكلمات المميزة</label><input type="number" id="accentWordCount" value="3" min="0" max="10" class="number-input"></div>
-                    <div><label>تباعد أسطر النص الرئيسي</label><input type="range" id="lineHeight" min="50" max="200" value="130"><span id="lhVal">130</span></div>
-                    <div><label>تباعد الفقرات</label><input type="number" id="paragraphSpacing" value="20" min="0" max="100" class="number-input"></div>
-                    <div><label>الحد الأقصى لعرض النص</label><input type="number" id="maxTextWidth" value="900" min="400" max="1000" class="number-input"></div>
+                    <div><label>اللون التمييزي</label><input type="color" id="accentColor" value="#e11d48" class="w-full h-10"></div>
+                    <div><label>عدد الكلمات المميزة</label><input type="number" id="accentWordCount" value="2" min="0" max="10" class="number-input"></div>
+                    <div><label>تباعد الأسطر</label><input type="range" id="lineHeight" min="60" max="200" value="130"><span id="lhVal">130</span></div>
+                    <div><label>عرض النص الأقصى</label><input type="number" id="maxTextWidth" value="960" min="400" max="1000" class="number-input"></div>
                 </div>
             </div>
         </div>
@@ -204,267 +186,171 @@
 
 <script>
 (function(){
+    "use strict";
     const canvas = document.getElementById('mainCanvas');
     const ctx = canvas.getContext('2d');
     canvas.width = 1080; canvas.height = 1080;
 
-    // ---------- الحالة الكاملة ----------
+    // حالة افتراضية مطابقة للصورة
     const state = {
-        // عنوان رئيسي
-        title: { text: "عاجل: إطلاق النسخة الاحترافية", font: "'Cairo', sans-serif", color: "#ffffff", size: 80, opacity: 100, x: 80, y: 200, align: "right", shadowX: 2, shadowY: 2, shadowBlur: 10, shadowColor: "#000000" },
-        // عنوان فرعي
-        subtitle: { text: "تفاصيل إضافية هامة حول الحدث", font: "'Cairo', sans-serif", color: "#cbd5e1", size: 40, opacity: 90, x: 80, y: 350 },
-        // المصدر
-        source: { text: "مصدر الخبر | الحقيقة أولاً", font: "'Cairo', sans-serif", color: "#0ea5e9", size: 34, opacity: 100, x: 80, y: 980, showIcon: true },
-        // خلفية
+        title: { text: "Ramadan Food Distribution 2021", font: "'Bebas Neue', sans-serif", color: "#ffffff", size: 110, opacity: 100, x: 60, y: 240, align: "left" },
+        subtitle: { text: "نبذة بريطانية تدفع تعويضات الأسرة أثناء الإسالمية", font: "'Tajawal', sans-serif", color: "#e2e8f0", size: 52, opacity: 90, x: 60, y: 450 },
+        source: { text: "بعد انهتامات كاذبة", font: "'Tajawal', sans-serif", color: "#e11d48", size: 38, opacity: 100, x: 60, y: 980, showIcon: true },
         bg: { img: null, mode: "cover", opacity: 100 },
-        gradient: { opacity: 90, startColor: "#000000" },
-        // شعار
-        logo: { img: null, size: 180, opacity: 100, rotation: 0, pos: "TL", offsetX: 70, offsetY: 70 },
-        // متقدم
-        accentColor: "#0ea5e9",
-        accentWordCount: 3,
+        gradient: { opacity: 95 },
+        logo: { img: null, size: 140, opacity: 90, pos: "TR", offsetX: 50, offsetY: 50 },
+        accentColor: "#e11d48",
+        accentWordCount: 2,
         lineHeight: 130,
-        paragraphSpacing: 20,
-        maxTextWidth: 900,
+        maxTextWidth: 960,
     };
 
-    // ---------- عناصر DOM ----------
-    function $(id) { return document.getElementById(id); }
-    
-    // التبويبات
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', (e) => {
+    // DOM elements
+    const $ = id => document.getElementById(id);
+    // تبويبات
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
         $(btn.dataset.tab).classList.remove('hidden');
     }));
-
-    // الطي
+    // طي
     document.querySelectorAll('.collapse-header').forEach(h => h.addEventListener('click', () => {
-        const target = $(h.dataset.target);
-        target.classList.toggle('open');
-        h.querySelector('span').textContent = target.classList.contains('open') ? '▼' : '▶';
+        const t = $(h.dataset.target);
+        t.classList.toggle('open');
+        h.querySelector('span').textContent = t.classList.contains('open') ? '▼' : '▶';
     }));
 
-    // مزامنة أولية
+    // مزامنة UI
     function syncUI() {
-        // عنوان
-        $('titleText').value = state.title.text;
-        $('titleFont').value = state.title.font;
-        $('titleColor').value = state.title.color;
+        $('titleText').value = state.title.text; $('titleFont').value = state.title.font; $('titleColor').value = state.title.color;
         $('titleSize').value = state.title.size; $('titleSizeVal').textContent = state.title.size;
         $('titleOpacity').value = state.title.opacity; $('titleOpacityVal').textContent = state.title.opacity+'%';
-        $('titleX').value = state.title.x; $('titleY').value = state.title.y;
-        $('titleAlign').value = state.title.align;
-        $('titleShadowX').value = state.title.shadowX; $('titleShadowY').value = state.title.shadowY; $('titleShadowBlur').value = state.title.shadowBlur; $('titleShadowColor').value = state.title.shadowColor;
-        // فرعي
+        $('titleX').value = state.title.x; $('titleY').value = state.title.y; $('titleAlign').value = state.title.align;
         $('subText').value = state.subtitle.text; $('subFont').value = state.subtitle.font; $('subColor').value = state.subtitle.color;
         $('subSize').value = state.subtitle.size; $('subSizeVal').textContent = state.subtitle.size;
         $('subOpacity').value = state.subtitle.opacity; $('subOpacityVal').textContent = state.subtitle.opacity+'%';
         $('subX').value = state.subtitle.x; $('subY').value = state.subtitle.y;
-        // مصدر
         $('sourceText').value = state.source.text; $('sourceFont').value = state.source.font; $('sourceColor').value = state.source.color;
         $('sourceSize').value = state.source.size; $('sourceSizeVal').textContent = state.source.size;
         $('sourceOpacity').value = state.source.opacity; $('sourceX').value = state.source.x; $('sourceY').value = state.source.y;
         $('sourceIcon').checked = state.source.showIcon;
-        // خلفية
         $('bgMode').value = state.bg.mode; $('bgOpacity').value = state.bg.opacity;
         $('gradientOpacity').value = state.gradient.opacity; $('gradVal').textContent = state.gradient.opacity+'%';
-        $('gradStartColor').value = state.gradient.startColor;
-        // شعار
-        $('logoSize').value = state.logo.size; $('logoOpacity').value = state.logo.opacity; $('logoRotation').value = state.logo.rotation;
+        $('logoSize').value = state.logo.size; $('logoOpacity').value = state.logo.opacity;
         $('logoOffsetX').value = state.logo.offsetX; $('logoOffsetY').value = state.logo.offsetY;
-        document.querySelectorAll('.pos-btn').forEach(b => { b.classList.toggle('active', b.dataset.pos === state.logo.pos); });
-        // متقدم
+        document.querySelectorAll('.pos-btn').forEach(b => b.classList.toggle('active', b.dataset.pos === state.logo.pos));
         $('accentColor').value = state.accentColor; $('accentWordCount').value = state.accentWordCount;
         $('lineHeight').value = state.lineHeight; $('lhVal').textContent = state.lineHeight;
-        $('paragraphSpacing').value = state.paragraphSpacing; $('maxTextWidth').value = state.maxTextWidth;
-    }
-
-    // تحديث القيم الرقمية المعروضة
-    function bindNumberDisplay() {
-        $('titleSize').addEventListener('input', e => { state.title.size = +e.target.value; $('titleSizeVal').textContent = e.target.value; render(); });
-        $('titleOpacity').addEventListener('input', e => { state.title.opacity = +e.target.value; $('titleOpacityVal').textContent = e.target.value+'%'; render(); });
-        $('subSize').addEventListener('input', e => { state.subtitle.size = +e.target.value; $('subSizeVal').textContent = e.target.value; render(); });
-        $('subOpacity').addEventListener('input', e => { state.subtitle.opacity = +e.target.value; $('subOpacityVal').textContent = e.target.value+'%'; render(); });
-        $('sourceSize').addEventListener('input', e => { state.source.size = +e.target.value; $('sourceSizeVal').textContent = e.target.value; render(); });
-        $('gradientOpacity').addEventListener('input', e => { state.gradient.opacity = +e.target.value; $('gradVal').textContent = e.target.value+'%'; render(); });
-        $('lineHeight').addEventListener('input', e => { state.lineHeight = +e.target.value; $('lhVal').textContent = e.target.value; render(); });
+        $('maxTextWidth').value = state.maxTextWidth;
     }
 
     // ربط الأحداث
     function bindEvents() {
-        // العنوان
-        ['titleText','titleFont','titleColor','titleX','titleY','titleAlign','titleShadowX','titleShadowY','titleShadowBlur','titleShadowColor'].forEach(id => {
-            $(id).addEventListener('input', () => { 
-                if(id.includes('Text')) state.title.text = $(id).value;
-                else if(id.includes('Font')) state.title.font = $(id).value;
-                else if(id.includes('Color')) state.title.color = $(id).value;
-                else if(id.includes('X') && !id.includes('Shadow')) state.title.x = +$(id).value;
-                else if(id.includes('Y') && !id.includes('Shadow')) state.title.y = +$(id).value;
-                else if(id.includes('Align')) state.title.align = $(id).value;
-                else if(id.includes('ShadowX')) state.title.shadowX = +$(id).value;
-                else if(id.includes('ShadowY')) state.title.shadowY = +$(id).value;
-                else if(id.includes('ShadowBlur')) state.title.shadowBlur = +$(id).value;
-                else if(id.includes('ShadowColor')) state.title.shadowColor = $(id).value;
-                render();
-            });
-        });
-        // فرعي
-        ['subText','subFont','subColor','subX','subY'].forEach(id => {
-            $(id).addEventListener('input', () => {
-                if(id.includes('Text')) state.subtitle.text = $(id).value;
-                else if(id.includes('Font')) state.subtitle.font = $(id).value;
-                else if(id.includes('Color')) state.subtitle.color = $(id).value;
-                else if(id.includes('X')) state.subtitle.x = +$(id).value;
-                else if(id.includes('Y')) state.subtitle.y = +$(id).value;
-                render();
-            });
-        });
-        // مصدر
-        ['sourceText','sourceFont','sourceColor','sourceX','sourceY','sourceOpacity'].forEach(id => {
-            $(id).addEventListener('input', () => {
-                if(id.includes('Text')) state.source.text = $(id).value;
-                else if(id.includes('Font')) state.source.font = $(id).value;
-                else if(id.includes('Color')) state.source.color = $(id).value;
-                else if(id.includes('Opacity')) state.source.opacity = +$(id).value;
-                else if(id.includes('X')) state.source.x = +$(id).value;
-                else if(id.includes('Y')) state.source.y = +$(id).value;
-                render();
-            });
-        });
-        $('sourceIcon').addEventListener('change', e => { state.source.showIcon = e.target.checked; render(); });
-        // خلفية
-        $('bgInput').addEventListener('change', e => {
-            const f = e.target.files[0]; if(!f) return;
-            const r = new FileReader(); r.onload = ev => { const img = new Image(); img.onload = () => { state.bg.img = img; render(); }; img.src = ev.target.result; }; r.readAsDataURL(f);
-        });
+        const updateTitle = () => { state.title = { ...state.title, text: $('titleText').value, font: $('titleFont').value, color: $('titleColor').value, size: +$('titleSize').value, opacity: +$('titleOpacity').value, x: +$('titleX').value, y: +$('titleY').value, align: $('titleAlign').value }; render(); };
+        ['titleText','titleFont','titleColor','titleSize','titleOpacity','titleX','titleY','titleAlign'].forEach(id => $(id).addEventListener('input', updateTitle));
+        
+        const updateSub = () => { state.subtitle = { ...state.subtitle, text: $('subText').value, font: $('subFont').value, color: $('subColor').value, size: +$('subSize').value, opacity: +$('subOpacity').value, x: +$('subX').value, y: +$('subY').value }; render(); };
+        ['subText','subFont','subColor','subSize','subOpacity','subX','subY'].forEach(id => $(id).addEventListener('input', updateSub));
+        
+        const updateSource = () => { state.source = { ...state.source, text: $('sourceText').value, font: $('sourceFont').value, color: $('sourceColor').value, size: +$('sourceSize').value, opacity: +$('sourceOpacity').value, x: +$('sourceX').value, y: +$('sourceY').value, showIcon: $('sourceIcon').checked }; render(); };
+        ['sourceText','sourceFont','sourceColor','sourceSize','sourceOpacity','sourceX','sourceY'].forEach(id => $(id).addEventListener('input', updateSource));
+        $('sourceIcon').addEventListener('change', updateSource);
+        
+        $('bgInput').addEventListener('change', e => { const f = e.target.files[0]; if(f) { const r = new FileReader(); r.onload = ev => { const img = new Image(); img.onload = () => { state.bg.img = img; render(); }; img.src = ev.target.result; }; r.readAsDataURL(f); }});
         ['bgMode','bgOpacity'].forEach(id => $(id).addEventListener('change', e => { state.bg[id] = (id==='mode'? e.target.value : +e.target.value); render(); }));
-        $('gradStartColor').addEventListener('input', e => { state.gradient.startColor = e.target.value; render(); });
-        // شعار
-        $('logoInput').addEventListener('change', e => {
-            const f = e.target.files[0]; if(!f) return;
-            const r = new FileReader(); r.onload = ev => { const img = new Image(); img.onload = () => { state.logo.img = img; render(); }; img.src = ev.target.result; }; r.readAsDataURL(f);
-        });
-        ['logoSize','logoOpacity','logoRotation','logoOffsetX','logoOffsetY'].forEach(id => $(id).addEventListener('input', e => { 
-            if(id.includes('Size')) state.logo.size = +e.target.value; else if(id.includes('Opacity')) state.logo.opacity = +e.target.value; else if(id.includes('Rotation')) state.logo.rotation = +e.target.value; else if(id.includes('OffsetX')) state.logo.offsetX = +e.target.value; else state.logo.offsetY = +e.target.value; render(); 
-        }));
+        $('gradientOpacity').addEventListener('input', e => { state.gradient.opacity = +e.target.value; $('gradVal').textContent = e.target.value+'%'; render(); });
+        
+        $('logoInput').addEventListener('change', e => { const f = e.target.files[0]; if(f) { const r = new FileReader(); r.onload = ev => { const img = new Image(); img.onload = () => { state.logo.img = img; render(); }; img.src = ev.target.result; }; r.readAsDataURL(f); }});
+        ['logoSize','logoOpacity','logoOffsetX','logoOffsetY'].forEach(id => $(id).addEventListener('input', e => { if(id.includes('Size')) state.logo.size = +e.target.value; else if(id.includes('Opacity')) state.logo.opacity = +e.target.value; else if(id.includes('X')) state.logo.offsetX = +e.target.value; else state.logo.offsetY = +e.target.value; render(); }));
         document.querySelectorAll('.pos-btn').forEach(b => b.addEventListener('click', () => { state.logo.pos = b.dataset.pos; syncUI(); render(); }));
-        // متقدم
-        ['accentColor','accentWordCount','paragraphSpacing','maxTextWidth'].forEach(id => $(id).addEventListener('input', e => { state[id] = (id==='accentColor'? e.target.value : +e.target.value); render(); }));
+        
+        ['accentColor','accentWordCount','lineHeight','maxTextWidth'].forEach(id => $(id).addEventListener('input', e => { state[id] = (id==='accentColor'? e.target.value : +e.target.value); render(); }));
+        $('lineHeight').addEventListener('input', e => { $('lhVal').textContent = e.target.value; });
     }
 
-    // ---------- الرسم ----------
     function isRTL(text) { return /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/.test(text); }
-
-    function wrapText(text, font, maxWidth) {
-        ctx.font = font;
-        const words = text.split(/\s+/).filter(w=>w);
-        const lines = []; let line = []; let lineStr = '';
-        words.forEach(w => {
-            const test = lineStr + (lineStr?' ':'') + w;
-            if(ctx.measureText(test).width > maxWidth && line.length) { lines.push(line); line = [w]; lineStr = w; }
-            else { line.push(w); lineStr = test; }
-        });
-        if(line.length) lines.push(line);
-        return lines;
-    }
+    function wrapText(text, font, maxW) { ctx.font = font; const words = text.split(/\s+/).filter(w=>w); const lines=[]; let line=[], lineStr=''; words.forEach(w => { const test = lineStr+(lineStr?' ':'')+w; if(ctx.measureText(test).width > maxW && line.length) { lines.push(line); line=[w]; lineStr=w; } else { line.push(w); lineStr=test; }}); if(line.length) lines.push(line); return lines; }
 
     function render() {
         ctx.clearRect(0,0,canvas.width,canvas.height);
-        // خلفية
-        ctx.fillStyle = '#020617'; ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle = '#0b0f19'; ctx.fillRect(0,0,canvas.width,canvas.height);
         if(state.bg.img) {
             ctx.save(); ctx.globalAlpha = state.bg.opacity/100;
-            const img = state.bg.img; const cw=canvas.width, ch=canvas.height;
-            if(state.bg.mode === 'cover') { const s = Math.max(cw/img.width, ch/img.height); ctx.drawImage(img, (cw-img.width*s)/2, (ch-img.height*s)/2, img.width*s, img.height*s); }
-            else if(state.bg.mode === 'contain') { const s = Math.min(cw/img.width, ch/img.height); ctx.drawImage(img, (cw-img.width*s)/2, (ch-img.height*s)/2, img.width*s, img.height*s); }
-            else { ctx.drawImage(img, 0,0,cw,ch); }
+            const img = state.bg.img;
+            if(state.bg.mode === 'cover') { const s = Math.max(canvas.width/img.width, canvas.height/img.height); ctx.drawImage(img, (canvas.width-img.width*s)/2, (canvas.height-img.height*s)/2, img.width*s, img.height*s); }
+            else { const s = Math.min(canvas.width/img.width, canvas.height/img.height); ctx.drawImage(img, (canvas.width-img.width*s)/2, (canvas.height-img.height*s)/2, img.width*s, img.height*s); }
             ctx.restore();
         }
-        // تدرج
         const grad = ctx.createLinearGradient(0, canvas.height*0.3, 0, canvas.height);
-        grad.addColorStop(0, 'transparent'); grad.addColorStop(1, state.gradient.startColor + Math.round(state.gradient.opacity*2.55).toString(16).padStart(2,'0'));
+        grad.addColorStop(0, 'transparent'); grad.addColorStop(1, `rgba(0,0,0,${state.gradient.opacity/100})`);
         ctx.fillStyle = grad; ctx.fillRect(0,0,canvas.width,canvas.height);
         
-        // رسم الشعار
         if(state.logo.img) {
             ctx.save(); ctx.globalAlpha = state.logo.opacity/100;
-            let lx = state.logo.offsetX, ly = state.logo.offsetY; const s = state.logo.size;
+            let lx = state.logo.offsetX, ly = state.logo.offsetY, s = state.logo.size;
             if(state.logo.pos.includes('R')) lx = canvas.width - s - lx;
             if(state.logo.pos.includes('B')) ly = canvas.height - s - ly;
-            ctx.translate(lx+s/2, ly+s/2); ctx.rotate(state.logo.rotation * Math.PI/180);
-            ctx.drawImage(state.logo.img, -s/2, -s/2, s, s);
+            ctx.drawImage(state.logo.img, lx, ly, s, s);
             ctx.restore();
         }
 
-        // دوال مساعدة للرسم النصي
-        function drawTextLayer(layer) {
+        function drawLayer(layer, isTitle=false) {
             if(!layer.text.trim()) return;
-            const font = `${layer.size}px ${layer.font}`;
-            const maxW = state.maxTextWidth;
-            const lines = wrapText(layer.text, font, maxW);
-            const isRtl = isRTL(layer.text);
             ctx.save();
             ctx.globalAlpha = layer.opacity/100;
-            ctx.font = font;
-            ctx.textAlign = layer.align || (isRtl ? 'right' : 'left');
-            if(layer.shadowBlur) { ctx.shadowColor = layer.shadowColor; ctx.shadowBlur = layer.shadowBlur; ctx.shadowOffsetX = layer.shadowX; ctx.shadowOffsetY = layer.shadowY; }
+            ctx.font = `${layer.size}px ${layer.font}`;
+            ctx.fillStyle = layer.color;
+            ctx.textAlign = layer.align || (isRTL(layer.text)?'right':'left');
             let startX = layer.x;
-            if(layer.align === 'center') startX = canvas.width/2;
-            else if(layer.align === 'left') startX = layer.x;
-            else startX = canvas.width - layer.x; // right
+            if(ctx.textAlign === 'center') startX = canvas.width/2;
+            else if(ctx.textAlign === 'right') startX = canvas.width - layer.x;
             
+            const lines = wrapText(layer.text, ctx.font, state.maxTextWidth);
             let curY = layer.y;
-            lines.forEach((lineWords, idx) => {
-                const lineStr = lineWords.join(' ');
-                // لون خاص للكلمات الأولى في العنوان الرئيسي فقط
-                if(layer === state.title) {
-                    let xPos = startX; let wordIdx = 0; let accCount = state.accentWordCount;
-                    lineWords.forEach(word => {
-                        ctx.fillStyle = (wordIdx < accCount) ? state.accentColor : layer.color;
+            lines.forEach((words, idx) => {
+                if(isTitle) {
+                    let xPos = startX; let wordIdx = 0;
+                    words.forEach(word => {
+                        ctx.fillStyle = (wordIdx < state.accentWordCount) ? state.accentColor : layer.color;
                         ctx.fillText(word, xPos, curY);
                         const ww = ctx.measureText(word+' ').width;
-                        if(ctx.textAlign === 'right') xPos -= ww; else xPos += ww;
+                        ctx.textAlign === 'right' ? xPos -= ww : xPos += ww;
                         wordIdx++;
                     });
                 } else {
-                    ctx.fillStyle = layer.color;
-                    ctx.fillText(lineStr, startX, curY);
+                    ctx.fillText(words.join(' '), startX, curY);
                 }
-                curY += state.lineHeight + (idx < lines.length-1 ? state.paragraphSpacing : 0);
+                curY += state.lineHeight;
             });
             ctx.restore();
         }
 
-        drawTextLayer(state.title);
-        drawTextLayer(state.subtitle);
-        // رسم المصدر
+        drawLayer(state.title, true);
+        drawLayer(state.subtitle);
         if(state.source.text) {
             ctx.save(); ctx.globalAlpha = state.source.opacity/100;
             ctx.font = `${state.source.size}px ${state.source.font}`;
             ctx.fillStyle = state.source.color;
-            ctx.textAlign = isRTL(state.source.text) ? 'right' : 'left';
-            let sx = state.source.x; if(ctx.textAlign === 'right') sx = canvas.width - sx;
+            const align = isRTL(state.source.text)?'right':'left';
+            ctx.textAlign = align;
+            let sx = state.source.x; if(align==='right') sx = canvas.width - sx;
             ctx.fillText(state.source.text, sx, state.source.y);
             if(state.source.showIcon) {
-                ctx.fillStyle = state.source.color;
-                ctx.beginPath(); ctx.arc(sx + (ctx.textAlign==='right'? -20 : 20), state.source.y-10, 6, 0, 2*Math.PI); ctx.fill();
+                ctx.beginPath(); ctx.arc(sx + (align==='right'? -25 : 25), state.source.y-10, 7, 0, 2*Math.PI); ctx.fill();
             }
             ctx.restore();
         }
     }
 
-    // أزرار التحميل والتصفير
     $('downloadBtn').onclick = () => { const a=document.createElement('a'); a.download=`news_${Date.now()}.png`; a.href=canvas.toDataURL(); a.click(); };
     $('resetBtn').onclick = () => { if(confirm('إعادة ضبط جميع الإعدادات؟')) location.reload(); };
 
-    // بدء التشغيل
     syncUI();
-    bindNumberDisplay();
     bindEvents();
     render();
+    // تحديث القيم الرقمية المعروضة
+    ['titleSize','titleOpacity','subSize','subOpacity','sourceSize'].forEach(id => $(id).addEventListener('input', function(){ $(id+'Val').textContent = id.includes('Opacity') ? this.value+'%' : this.value; }));
 })();
 </script>
 </body>
